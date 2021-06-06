@@ -1,0 +1,15 @@
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+
+<body onload="init();">
+    <canvas id="myCanvas" width="500" height="300"></canvas>
+</body>
+
+<script>
+    function init() {
+        var stage = new createjs.Stage('myCanvas');
+        var shape = new createjs.Shape();
+        shape.graphics.beginFill('red').drawRect(0, 0, 120, 120);
+        stage.addChild(shape);
+        stage.update();
+    }
+</script>

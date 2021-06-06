@@ -1,18 +1,21 @@
 {
-  "name": "ladder",
-  "version": "1.0.0",
-  "description": "Climb the ladder!",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "author": "Alexander Webster",
-  "license": "ISC",
-  "dependencies": {
-    "easeljs": "^1.0.2",
-    "socket.io": "^4.1.2"
-  },
-  "devDependencies": {
-    "prettier": "2.3.1"
-  }
+    "name": "ladder",
+    "version": "1.0.0",
+    "description": "Climb the ladder!",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "author": "Alexander Webster",
+    "license": "ISC",
+    "dependencies": {
+        "createjs": "^1.0.1",
+        "createjs-module": "^0.8.3",
+        "easeljs": "^1.0.2",
+        "express": "^4.17.1",
+        "socket.io": "^4.1.2"
+    },
+    "devDependencies": {
+        "prettier": "2.3.1"
+    }
 }
