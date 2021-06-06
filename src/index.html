@@ -37,10 +37,10 @@
         document.addEventListener('keydown', function(event) {
             switch (event.keyCode) {
                 case 32: // spacebar | forward movement
-                    shape.x += Math.min(shape.x + 5, 200);
+                    shape.x = Math.min(shape.x + 5, 200);
                     break;
                 case 17: // ctrl | backward movement
-                    shape.x -= Math.max(shape.x -5, 5);
+                    shape.x = Math.max(shape.x -5, 5);
 
             }
 
