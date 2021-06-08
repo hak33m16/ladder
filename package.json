@@ -4,7 +4,9 @@
     "description": "Climb the ladder!",
     "main": "index.js",
     "scripts": {
-        "test": "test"
+        "test": "test",
+        "start": "node server.js",
+        "build": "browserify src/main.js -p esmify > src/build/src/main.js"
     },
     "author": "Alexander Webster",
     "license": "ISC",
@@ -14,9 +16,16 @@
         "easeljs": "^1.0.2",
         "express": "^4.17.1",
         "http-server": "^0.12.3",
+        "nano-ecs": "^2.4.0",
         "socket.io": "^4.1.2"
     },
     "devDependencies": {
-        "prettier": "2.3.1"
+        "@babel/preset-env": "^7.14.4",
+        "babelify": "^10.0.0",
+        "browserify": "^17.0.0",
+        "esmify": "^2.1.1",
+        "gulp": "^4.0.2",
+        "prettier": "2.3.1",
+        "vinyl-source-stream": "^2.0.0"
     }
 }
