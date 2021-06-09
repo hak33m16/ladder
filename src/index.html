@@ -1,11 +1,31 @@
 <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
 
 <body>
-    <canvas id="ladderGame" width="500" height="300"></canvas>
-    <script
-        src="build/src/main.js"
-        style="width: 500px; height: 500px"
-    ></script>
+    <div
+        style="
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <div
+            style="
+                width: 400px;
+                height: 300px;
+                border: 1px;
+                border-style: solid;
+                border-color: black;
+            "
+        >
+            <canvas id="ladderGame" width="400" height="300"></canvas>
+            <button id="button_right" type="button">click me</button>
+            <script
+                src="build/src/main.js"
+                style="width: 500px; height: 500px"
+            ></script>
+        </div>
+    </div>
 </body>
 
 <!-- <script>

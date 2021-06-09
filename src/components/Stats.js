@@ -4,24 +4,14 @@ export class Stats extends Component {
     constructor() {
         super('stats');
 
-        this.health = 0;
-        this.fear = 0;
-        this.anxiety = 0;
+        this.height = 0;
     }
 
-    getHealth() {
-        return this.health;
+    getHeight() {
+        return this.height;
     }
 
-    setHealth(health) {
-        this.health = health;
-    }
-
-    getFear() {
-        return this.fear;
-    }
-
-    setFear(fear) {
-        this.fear = fear;
+    setHeight(height) {
+        this.height = height;
     }
 }
