@@ -17,6 +17,7 @@ import { KeyHandler } from './utils/KeyHandler';
 // TODO: Auto load these...
 var imageStrings = [
     'character.png',
+    'character-left.png',
     'circle-medium.png',
     'circle-small.png',
     'platform.png',

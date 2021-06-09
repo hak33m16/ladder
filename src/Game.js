@@ -10,6 +10,7 @@ import { Box } from './components/Box';
 import { PlatformController } from './utils/PlatformController';
 import { PlayerControlSystem } from './systems/PlayerControlSystem';
 import { Stats } from './components/Stats';
+import { Character, VelocityDirectionMap } from './components/Character';
 
 export class Game {
     constructor(keyPressedOnceHandler) {
@@ -63,6 +64,7 @@ export class Game {
         player.addComponent(Position);
         player.addComponent(Box);
         player.addComponent(Stats);
+        player.addComponent(Character);
         console.log('Box2D class:', Box);
         console.log('player box2D:', player.box);
         console.log('player position:', player.position);
@@ -81,6 +83,16 @@ export class Game {
             Math.floor(
                 this.canvas.height - player.box.getHeight() - PLATFORM_HEIGHT
             )
+        );
+        console.log('direction velocity map:', VelocityDirectionMap);
+        console.log(
+            'next platform:',
+            platformController.getBottomPlatform().next
+        );
+        player.character.setDirection(
+            VelocityDirectionMap[
+                platformController.getBottomPlatform().next.relativePosition
+            ]
         );
 
         // console.log(this.context.width);
