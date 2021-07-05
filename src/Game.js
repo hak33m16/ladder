@@ -11,9 +11,19 @@ import { PlatformController } from './utils/PlatformController';
 import { PlayerControlSystem } from './systems/PlayerControlSystem';
 import { Stats } from './components/Stats';
 import { Character, VelocityDirectionMap } from './components/Character';
+import { Menu } from './menus/Menu';
+import { MainMenu } from './menus/MainMenu';
+import { MenuSystem } from './systems/MenuSystem';
+
+const GameState = {
+    MAIN_MENU: 'MAIN_MENU',
+    PLAYING: 'PLAYING'
+}
 
 export class Game {
     constructor(keyPressedOnceHandler) {
+        this.state = GameState.MAIN_MENU
+
         this.canvas = document.getElementById('ladderGame');
 
         this.context = this.canvas.getContext('2d');
@@ -24,6 +34,7 @@ export class Game {
         //this.running = true;
 
         this.systems = [];
+        this.menuSystems = [];
         this.keyPressedOnceHandler = keyPressedOnceHandler;
 
         this.lastRender = 0;
@@ -34,7 +45,12 @@ export class Game {
         let platformController = new PlatformController(this.entityManager);
         platformController.addPlatform(10);
 
+        console.log('context before passing into mainmenu:', this.context)
+        this.mainMenu = new MainMenu();
+
         // console.log('platform controller:', platformController);
+
+        this.menuSystems.push(new MenuSystem(this.context, this.canvas, imagemap));
 
         this.addSystem(new MovementSystem());
         this.addSystem(
@@ -68,9 +84,6 @@ export class Game {
         console.log('Box2D class:', Box);
         console.log('player box2D:', player.box);
         console.log('player position:', player.position);
-        // player.addComponent(Velocity);
-        // player.addComponent(Moveable);
-        // player.addComponent(Collideable);
 
         player.sprite.setImage('character.png');
         // TODO: Read width and height from image
@@ -94,9 +107,6 @@ export class Game {
                 platformController.getBottomPlatform().next.relativePosition
             ]
         );
-
-        // console.log(this.context.width);
-        // console.log(this.context.height);
     }
 
     getContext() {
@@ -109,8 +119,14 @@ export class Game {
     }
 
     update(deltaTime) {
-        for (let i = 0; i < this.systems.length; ++i) {
-            this.systems[i].update(deltaTime);
+        if (this.state == GameState.PLAYING) {
+            for (let i = 0; i < this.systems.length; ++i) {
+                this.systems[i].update(deltaTime);
+            }
+        } else if (this.state == GameState.MAIN_MENU) {
+            for (let i = 0; i < this.menuSystems.length; ++i) {
+                this.menuSystems[i].update(this.mainMenu);
+            }
         }
     }
 

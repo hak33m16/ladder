@@ -21,6 +21,7 @@ var imageStrings = [
     'circle-medium.png',
     'circle-small.png',
     'platform.png',
+    'menu-background.png',
 ];
 
 var IMAGEMAP_ = {};
