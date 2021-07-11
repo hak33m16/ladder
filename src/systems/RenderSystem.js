@@ -15,6 +15,9 @@ export class RenderSystem extends System {
     }
 
     update() {
+        this.context.textAlign = 'left';
+        this.context.font = '14px Arial';
+
         const player = this.entityManager.queryTag('player')[0];
 
         var candidates = this.entityManager.queryComponents([

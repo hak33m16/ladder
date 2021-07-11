@@ -66,7 +66,6 @@ export class PlayerControlSystem extends System {
                 this.platformController.removeBottomPlatform();
                 player.stats.setHeight(player.stats.getHeight() + 1);
             }
-            console.log('mctest');
         }
     }
 }

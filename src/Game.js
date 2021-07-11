@@ -15,14 +15,19 @@ import { Menu } from './menus/Menu';
 import { MainMenu } from './menus/MainMenu';
 import { MenuSystem } from './systems/MenuSystem';
 
-const GameState = {
-    MAIN_MENU: 'MAIN_MENU',
-    PLAYING: 'PLAYING'
-}
+export const GameState = {
+    MENU: 'MENU',
+    PLAYING: 'PLAYING',
+};
 
 export class Game {
     constructor(keyPressedOnceHandler) {
-        this.state = GameState.MAIN_MENU
+        this.keyPressedOnceHandler = keyPressedOnceHandler;
+
+        this.state = GameState.MENU;
+        this.menuStack = [
+            new MainMenu(this.keyPressedOnceHandler, this.setState.bind(this)),
+        ];
 
         this.canvas = document.getElementById('ladderGame');
 
@@ -35,22 +40,22 @@ export class Game {
 
         this.systems = [];
         this.menuSystems = [];
-        this.keyPressedOnceHandler = keyPressedOnceHandler;
 
         this.lastRender = 0;
         this.entityManager = nano();
+    }
+
+    setState(state) {
+        this.state = state;
     }
 
     init(imagemap) {
         let platformController = new PlatformController(this.entityManager);
         platformController.addPlatform(10);
 
-        console.log('context before passing into mainmenu:', this.context)
-        this.mainMenu = new MainMenu();
-
-        // console.log('platform controller:', platformController);
-
-        this.menuSystems.push(new MenuSystem(this.context, this.canvas, imagemap));
+        this.menuSystems.push(
+            new MenuSystem(this.context, this.canvas, imagemap, this.menuStack)
+        );
 
         this.addSystem(new MovementSystem());
         this.addSystem(
@@ -119,13 +124,16 @@ export class Game {
     }
 
     update(deltaTime) {
-        if (this.state == GameState.PLAYING) {
+        if (this.state == GameState.MENU) {
+            for (let i = 0; i < this.menuSystems.length; ++i) {
+                // always display top-most menu
+                this.menuSystems[i].update(
+                    this.menuStack[this.menuStack.length - 1]
+                );
+            }
+        } else if (this.state == GameState.PLAYING) {
             for (let i = 0; i < this.systems.length; ++i) {
                 this.systems[i].update(deltaTime);
-            }
-        } else if (this.state == GameState.MAIN_MENU) {
-            for (let i = 0; i < this.menuSystems.length; ++i) {
-                this.menuSystems[i].update(this.mainMenu);
             }
         }
     }

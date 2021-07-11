@@ -3,16 +3,21 @@ import { System } from '../System';
 import { Menu } from '../menus/Menu';
 
 export class MenuSystem extends System {
-    constructor(context, canvas, imagemap) {
+    constructor(context, canvas, imagemap, menuStack) {
         super('movementSystem');
-        this.context = context
-        this.canvas = canvas
-        this.imagemap = imagemap
+        this.context = context;
+        this.canvas = canvas;
+        this.imagemap = imagemap;
+        this.menuStack = menuStack;
     }
 
-    update(menu) {
-        menu.update();
-        menu.draw(this.context, this.canvas, this.imagemap);
+    update() {
+        this.menuStack[this.menuStack.length - 1].update();
+        this.menuStack[this.menuStack.length - 1].draw(
+            this.context,
+            this.canvas,
+            this.imagemap
+        );
         // var candidates = this.entityManager.queryComponents([
         //     Position,
         //     Velocity,
