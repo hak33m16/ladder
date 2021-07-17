@@ -1,8 +1,8 @@
 import { Component } from '../Component';
 
-export class Camera extends Component {
+export class Offset extends Component {
     constructor() {
-        super('camera');
+        super('offset');
 
         this.xOffset = 0;
         this.yOffset = 0;

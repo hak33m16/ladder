@@ -1,6 +1,8 @@
 import { GameState } from '../Game';
 import { Menu } from './Menu';
 
+import * as Constants from '../Constants';
+
 const Selection = {
     START: 'START',
     SETTINGS: 'SETTINGS',
@@ -10,7 +12,7 @@ export class MainMenu extends Menu {
     constructor(keyPressedOnceHandler, setGameState) {
         super(keyPressedOnceHandler, setGameState);
         this.backgroundImage = 'menu-background.png';
-        this.headerText = 'Ladder';
+        this.headerText = 'LADDER';
         this.startText = 'Start';
         this.settingsText = 'Settings';
         this.versionText = 'v0.0.0.0.1 :: Pre-Pre Alpha';
@@ -18,8 +20,8 @@ export class MainMenu extends Menu {
     }
 
     draw(context, canvas, imagemap) {
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
+        const centerX = canvas.width / 2 / Constants.SCALE;
+        const centerY = canvas.height / 2 / Constants.SCALE;
 
         context.drawImage(
             imagemap[this.backgroundImage],
@@ -28,17 +30,17 @@ export class MainMenu extends Menu {
         );
 
         context.textAlign = 'center';
-        context.font = '64px Arial';
+        context.font = '64px "04b03"';
 
-        context.lineWidth = 3;
+        context.lineWidth = 2;
         context.strokeText(this.headerText, centerX, centerY - 75);
         context.lineWidth = 1;
         context.fillText(this.headerText, centerX, centerY - 75);
 
-        context.font = '28px Arial';
+        context.font = '28px "04b03"';
 
         if (this.selection == Selection.START) {
-            context.lineWidth = 3;
+            context.lineWidth = 2;
             context.strokeText(
                 new Array(this.startText.length + 1).join('_'),
                 centerX,
@@ -53,13 +55,13 @@ export class MainMenu extends Menu {
             );
         }
 
-        context.lineWidth = 3;
+        context.lineWidth = 2;
         context.strokeText(this.startText, centerX, centerY + 25);
         context.lineWidth = 1;
         context.fillText(this.startText, centerX, centerY + 25);
 
         if (this.selection == Selection.SETTINGS) {
-            context.lineWidth = 3;
+            context.lineWidth = 2;
             context.strokeText(
                 new Array(this.settingsText.length + 1).join('_'),
                 centerX,
@@ -74,7 +76,7 @@ export class MainMenu extends Menu {
             );
         }
 
-        context.lineWidth = 3;
+        context.lineWidth = 2;
         context.strokeText(this.settingsText, centerX, centerY + 60);
         context.lineWidth = 1;
         context.fillText(this.settingsText, centerX, centerY + 60);

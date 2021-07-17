@@ -3,10 +3,10 @@ import { Position } from '../components/Position';
 import { Box } from '../components/Box';
 
 export class PlatformNode {
-    constructor(relativePosition, platformEntity) {
+    constructor(relativePosition, platformEntity, prevNode = null) {
         this.relativePosition = relativePosition;
         this.platformEntity = platformEntity;
-        this.prev = null;
+        this.prev = prevNode;
         this.next = null;
     }
 }
@@ -14,6 +14,7 @@ export class PlatformNode {
 export class PlatformController {
     constructor(entityManager) {
         this.entityManager = entityManager;
+        this.currentPlatform = null;
         this.head = null;
         this.tail = null;
     }
@@ -38,6 +39,10 @@ export class PlatformController {
 
             ++counter;
         }
+
+        if (this.currentPlatform == null) {
+            this.currentPlatform = this.head;
+        }
     }
 
     removeBottomPlatform() {
@@ -48,6 +53,18 @@ export class PlatformController {
 
     getBottomPlatform() {
         return this.head;
+    }
+
+    getCurrentPlatform() {
+        return this.currentPlatform;
+    }
+
+    moveCurrentUp() {
+        this.currentPlatform = this.currentPlatform.next;
+
+        this.addPlatform();
+
+        return this.currentPlatform;
     }
 
     createPlatformEntity() {

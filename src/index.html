@@ -1,5 +1,24 @@
 <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+    rel="stylesheet"
+/> -->
+<style type="text/css">
+    @font-face {
+        font-family: '04b03';
+        src: url('resources/fonts/04b03.woff2') format('woff2'),
+            url('resources/fonts/04b03.woff') format('woff'),
+            url('resources/fonts/04b03.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
 
+    body {
+        font-family: '04b03';
+    }
+</style>
 <body>
     <div
         style="
@@ -11,65 +30,21 @@
     >
         <div
             style="
-                width: 400px;
-                height: 300px;
+                width: 1000px;
+                height: 700px;
                 border: 1px;
                 border-style: solid;
                 border-color: black;
             "
         >
-            <canvas id="ladderGame" width="400" height="300"></canvas>
-            <button id="button_right" type="button">click me</button>
+            <canvas id="ladderGame" width="1000" height="700"></canvas>
             <script
                 src="build/src/main.js"
-                style="width: 500px; height: 500px"
+                style="width: 1000px; height: 700px"
             ></script>
         </div>
     </div>
+    <div>
+        <!-- <span>Test test</span> -->
+    </div>
 </body>
-
-<!-- <script>
-    var count;
-    var stage;
-    var shape;
-
-    // Graphic variables
-    // [Scenery]
-    var background;
-    var score;
-    var ground;
-
-    // [Actors]
-    var rung;
-    var player;
-
-    function init() {
-        stage = new createjs.Stage('myCanvas');
-        stage.autoClear=true;
-        shape = new createjs.Shape();
-        shape.graphics.beginFill("red").drawRect(5, 5, 120, 120);
-        
-        count = 0;
-
-        stage.addChild(shape);
-
-        keyboardHandler();
-        stage.update();
-    }
-
-    function keyboardHandler() {
-        document.addEventListener('keydown', function(event) {
-            switch (event.keyCode) {
-                case 32: // spacebar | forward movement
-                    shape.x = Math.min(shape.x + 5, 200);
-                    break;
-                case 17: // ctrl | backward movement
-                    shape.x = Math.max(shape.x -5, 5);
-
-            }
-
-            // shape.graphics.beginFill(colors[count % colors.length]);
-            stage.update();
-        });
-    }
-</script> -->

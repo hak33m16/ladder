@@ -5,23 +5,52 @@
 
 // var Sprite = require('./components/Sprite');
 
-import { Sprite } from './components/Sprite';
-import { Position } from './components/Position';
-import { Velocity } from './components/Velocity';
-import { Moveable } from './components/Moveable';
-import { Collideable } from './components/Collideable';
+// import { Sprite } from './components/Sprite';
+// import { Position } from './components/Position';
+// import { Velocity } from './components/Velocity';
+// import { Moveable } from './components/Moveable';
+// import { Collideable } from './components/Collideable';
 
 import { Game } from './Game';
 import { KeyHandler } from './utils/KeyHandler';
+
+// Doesn't support ES6 imports: https://github.com/bramstein/fontfaceobserver/issues/102
+let FontFaceObserver = require('fontfaceobserver');
+
+// var f = new FontFace('04b03', 'url("resources/fonts/04b03.ttf")');
+
+// // //console.log(f);
+// // // try {
+// // //     f.load();
+// // // } catch (e) {
+// // //     console.log(e);
+// // // }
+
+// f.load().then(function (font) {
+//     // Ready to use the font in a canvas context
+//     console.log('mcready');
+
+//     // Add font on the html page
+//     document.fonts.add(font);
+
+//     // ctx.font = '48px Font name';
+//     // ctx.strokeText('Hello world', 100, 100);
+// });
 
 // TODO: Auto load these...
 var imageStrings = [
     'character.png',
     'character-left.png',
+    'character-jump.png',
+    'character-jump-left.png',
     'circle-medium.png',
     'circle-small.png',
     'platform.png',
     'menu-background.png',
+    'parallax-mountain-mountain-far.png',
+    'parallax-mountain-mountains.png',
+    'sky-background.png',
+    'clouds.png',
 ];
 
 var IMAGEMAP_ = {};
@@ -43,91 +72,28 @@ function loadImages(fileNames, callback) {
     }
 }
 
-//
-// binding here fixes the issue of inaccessible 'this'
-// still don't fully understand, and need to study more?
-// https://stackoverflow.com/questions/20279484/how-to-access-the-correct-this-inside-a-callback
-//
-
-let gameRef = null;
-
-var createBall = function () {
-    var ball = gameRef.entityManager.createEntity();
-
-    ball.addComponent(Sprite);
-    ball.addComponent(Position);
-    ball.addComponent(Velocity);
-    ball.addComponent(Moveable);
-    ball.addComponent(Collideable);
-
-    var seed = Math.random();
-    if (seed < 0.5) {
-        ball.sprite.setImage('character.png');
-        ball.collideable.setWidth(32);
-        ball.collideable.setHeight(32);
-    } else {
-        ball.sprite.setImage('circle-small.png');
-        ball.collideable.setWidth(16);
-        ball.collideable.setHeight(16);
-    }
-
-    seed = Math.random();
-    var min = 0,
-        max = 280 - ball.collideable.getWidth(); // hard coded canvas size for now
-    seed *= +max - +min + +min;
-    ball.position.setX(seed);
-
-    seed = Math.random();
-    (min = 0), (max = 280 - ball.collideable.getHeight()); // hard coded canvas size for now
-    seed *= +max - +min + +min;
-    ball.position.setY(seed);
-
-    seed = Math.random();
-    (min = -1), (max = 1);
-    seed *= +max - +min + +min;
-    ball.velocity.setVelocityX(seed);
-
-    seed = Math.random();
-    (min = -1), (max = 1);
-    seed *= +max - +min + +min;
-    ball.velocity.setVelocityY(seed);
-
-    seed = Math.random();
-    (min = 1.5), (max = 6);
-    seed *= +max - +min + +min;
-    ball.moveable.setSpeed(seed);
-
-    console.log(ball);
-};
-
 const keyPressedOnceHandler = new KeyHandler();
 
 let previousKeyDownMap = new Map();
 let currentKeyDownMap = new Map();
 
 document.addEventListener('keydown', function (event) {
-    // console.log('keydown event');
-    // currentKeyDownMap.set(event.key, true);
-
-    // if (previousKeyDownMap.get(event.key) !== true) {
     keyPressedOnceHandler.updateKey(event.key, true);
-    // }
-
-    // previousKeyDownMap = currentKeyDownMap;
-    // currentKeyDownMap.clear();
 });
 
-// document.addEventListener('keypress')
+const canvas = document.getElementById('ladderGame');
 
 function main(imagemap) {
-    var game = new Game(keyPressedOnceHandler);
-    gameRef = game;
+    var game = new Game(keyPressedOnceHandler, canvas);
+
     game.init(imagemap);
-    // createBall();
-    // createBall();
     game.run();
 }
 
-document.getElementById('button_right').addEventListener('click', createBall);
+var font = new FontFaceObserver('04b03');
 
-loadImages(imageStrings, main);
+// Might be nice to add loading text during this in case their connection is slow
+font.load().then(function () {
+    console.log('mcloaded');
+    loadImages(imageStrings, main);
+});

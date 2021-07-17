@@ -6,6 +6,8 @@ import { RenderSystem } from './systems/RenderSystem';
 import { Sprite } from './components/Sprite';
 import { Position } from './components/Position';
 import { Box } from './components/Box';
+import { Camera } from './components/Camera';
+import { Offset } from './components/Offset';
 
 import { PlatformController } from './utils/PlatformController';
 import { PlayerControlSystem } from './systems/PlayerControlSystem';
@@ -15,13 +17,15 @@ import { Menu } from './menus/Menu';
 import { MainMenu } from './menus/MainMenu';
 import { MenuSystem } from './systems/MenuSystem';
 
+import * as Constants from './Constants';
+
 export const GameState = {
     MENU: 'MENU',
     PLAYING: 'PLAYING',
 };
 
 export class Game {
-    constructor(keyPressedOnceHandler) {
+    constructor(keyPressedOnceHandler, canvas) {
         this.keyPressedOnceHandler = keyPressedOnceHandler;
 
         this.state = GameState.MENU;
@@ -29,12 +33,18 @@ export class Game {
             new MainMenu(this.keyPressedOnceHandler, this.setState.bind(this)),
         ];
 
-        this.canvas = document.getElementById('ladderGame');
+        this.canvas = canvas;
 
         this.context = this.canvas.getContext('2d');
         this.context.fillStyle = 'white';
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        //this.context.scale(2, 2);
+
+        this.context.scale(Constants.SCALE, Constants.SCALE);
+
+        // Required to prevent smoothing
+        this.context.webkitImageSmoothingEnabled = false;
+        this.context.mozImageSmoothingEnabled = false;
+        this.context.imageSmoothingEnabled = false;
 
         //this.running = true;
 
@@ -51,7 +61,7 @@ export class Game {
 
     init(imagemap) {
         let platformController = new PlatformController(this.entityManager);
-        platformController.addPlatform(10);
+        platformController.addPlatform(15);
 
         this.menuSystems.push(
             new MenuSystem(this.context, this.canvas, imagemap, this.menuStack)
@@ -75,6 +85,12 @@ export class Game {
 
         const PLATFORM_HEIGHT = 16;
 
+        // Create camera
+
+        var camera = this.entityManager.createEntity();
+        camera.addTag('camera');
+        camera.addComponent(Camera);
+
         // Create player
 
         var player = this.entityManager.createEntity();
@@ -86,6 +102,7 @@ export class Game {
         player.addComponent(Box);
         player.addComponent(Stats);
         player.addComponent(Character);
+        player.addComponent(Offset);
         console.log('Box2D class:', Box);
         console.log('player box2D:', player.box);
         console.log('player position:', player.position);
