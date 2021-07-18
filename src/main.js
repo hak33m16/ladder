@@ -13,6 +13,7 @@
 
 import { Game } from './Game';
 import { KeyHandler } from './utils/KeyHandler';
+// import { Vector2 } from './system/Vector2';
 
 // Doesn't support ES6 imports: https://github.com/bramstein/fontfaceobserver/issues/102
 let FontFaceObserver = require('fontfaceobserver');
@@ -51,9 +52,13 @@ var imageStrings = [
     'parallax-mountain-mountains.png',
     'sky-background.png',
     'clouds.png',
+    'coin-gold.png',
+    'coin-silver.png',
 ];
 
 var IMAGEMAP_ = {};
+
+// console.log(new Vector2());
 
 function loadImages(fileNames, callback) {
     var count = fileNames.length;

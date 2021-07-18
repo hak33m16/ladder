@@ -3,11 +3,11 @@ var nano = require('nano-ecs');
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
 
-import { Sprite } from './components/Sprite';
 import { Position } from './components/Position';
 import { Box } from './components/Box';
 import { Camera } from './components/Camera';
 import { Offset } from './components/Offset';
+import { Image } from './components/Image';
 
 import { PlatformController } from './utils/PlatformController';
 import { PlayerControlSystem } from './systems/PlayerControlSystem';
@@ -18,6 +18,13 @@ import { MainMenu } from './menus/MainMenu';
 import { MenuSystem } from './systems/MenuSystem';
 
 import * as Constants from './Constants';
+import { EventManager } from './events/EventManager';
+import { AnimationSystem } from './systems/AnimationSystem';
+import { Rectangle } from './shapes/Rectangle';
+import { Frame } from './graphics/Frame';
+import { Animation } from './graphics/Animation';
+import { Sprite } from './graphics/Sprite';
+import { Animatable } from './components/Animatable';
 
 export const GameState = {
     MENU: 'MENU',
@@ -53,23 +60,76 @@ export class Game {
 
         this.lastRender = 0;
         this.entityManager = nano();
+        this.eventManager = new EventManager();
     }
 
     setState(state) {
         this.state = state;
     }
 
+    createCoinAnimation(imagemap) {
+        const coinSprite1 = new Sprite(
+            imagemap['coin-gold.png'],
+            new Rectangle(0, 0, 16, 16)
+        );
+        const coinSprite2 = new Sprite(
+            imagemap['coin-gold.png'],
+            new Rectangle(16, 0, 16, 16)
+        );
+        const coinSprite3 = new Sprite(
+            imagemap['coin-gold.png'],
+            new Rectangle(32, 0, 16, 16)
+        );
+        const coinSprite4 = new Sprite(
+            imagemap['coin-gold.png'],
+            new Rectangle(48, 0, 16, 16)
+        );
+        const coinSprite5 = new Sprite(
+            imagemap['coin-gold.png'],
+            new Rectangle(64, 0, 16, 16)
+        );
+        const coinFrame1 = new Frame(120, [coinSprite1]);
+        const coinFrame2 = new Frame(120, [coinSprite2]);
+        const coinFrame3 = new Frame(120, [coinSprite3]);
+        const coinFrame4 = new Frame(120, [coinSprite4]);
+        const coinFrame5 = new Frame(120, [coinSprite5]);
+        const goldCoinAni = new Animation(true, [
+            coinFrame1,
+            coinFrame2,
+            coinFrame3,
+            coinFrame4,
+            coinFrame5,
+        ]);
+        const testCoin = this.entityManager.createEntity();
+        testCoin.addComponent(Animatable);
+        testCoin.addComponent(Position);
+        testCoin.animatable.setAnimation(goldCoinAni);
+    }
+
     init(imagemap) {
-        let platformController = new PlatformController(this.entityManager);
+        // this.createCoinAnimation(imagemap);
+
+        let platformController = new PlatformController(
+            this.entityManager,
+            imagemap
+        );
         platformController.addPlatform(15);
 
         this.menuSystems.push(
-            new MenuSystem(this.context, this.canvas, imagemap, this.menuStack)
+            new MenuSystem(
+                this.eventManager,
+                this.context,
+                this.canvas,
+                imagemap,
+                this.menuStack
+            )
         );
 
-        this.addSystem(new MovementSystem());
+        this.addSystem(new MovementSystem(this.eventManager));
+        this.addSystem(new AnimationSystem());
         this.addSystem(
             new RenderSystem(
+                this.eventManager,
                 this.context,
                 this.canvas,
                 platformController,
@@ -78,6 +138,7 @@ export class Game {
         );
         this.addSystem(
             new PlayerControlSystem(
+                this.eventManager,
                 this.keyPressedOnceHandler,
                 platformController
             )
@@ -97,7 +158,7 @@ export class Game {
         // TODO: Create constants file for tags
         player.addTag('player');
 
-        player.addComponent(Sprite);
+        player.addComponent(Image);
         player.addComponent(Position);
         player.addComponent(Box);
         player.addComponent(Stats);
@@ -107,7 +168,7 @@ export class Game {
         console.log('player box2D:', player.box);
         console.log('player position:', player.position);
 
-        player.sprite.setImage('character.png');
+        player.image.setImage('character.png');
         // TODO: Read width and height from image
         player.box.setWidth(32);
         player.box.setHeight(48);

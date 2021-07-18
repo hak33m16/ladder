@@ -6,8 +6,8 @@ import { Moveable } from '../components/Moveable';
 import { Collideable } from '../components/Collideable';
 
 export class MovementSystem extends System {
-    constructor() {
-        super('movementSystem');
+    constructor(eventManager) {
+        super('movementSystem', eventManager);
     }
 
     update() {

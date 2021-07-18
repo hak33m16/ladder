@@ -5,6 +5,8 @@ export class Stats extends Component {
         super('stats');
 
         this.height = 0;
+        this.stamina = 0;
+        this.coins = 0;
     }
 
     getHeight() {
@@ -13,5 +15,21 @@ export class Stats extends Component {
 
     setHeight(height) {
         this.height = height;
+    }
+
+    getStamina() {
+        return this.stamina;
+    }
+
+    setStamina(stamina) {
+        this.stamina = stamina;
+    }
+
+    getCoins() {
+        return this.coins;
+    }
+
+    setCoins(coins) {
+        this.coins = coins;
     }
 }

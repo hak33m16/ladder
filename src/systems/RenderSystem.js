@@ -1,15 +1,18 @@
 import { System } from '../System';
 
-import { Sprite } from '../components/Sprite';
 import { Position } from '../components/Position';
 import { Collideable } from '../components/Collideable';
 import { Velocity } from '../components/Velocity';
+import { Animatable } from '../components/Animatable';
+
+import { PlayerDied } from '../events/PlayerDied';
 
 import * as Constants from '../Constants';
+import { Vector2 } from '../system/Vector2';
 
 export class RenderSystem extends System {
-    constructor(context, canvas, platformController, imagemap) {
-        super('renderSystem');
+    constructor(eventManager, context, canvas, platformController, imagemap) {
+        super('renderSystem', eventManager);
         this.context = context;
         this.canvas = canvas;
         this.platformController = platformController;
@@ -32,6 +35,16 @@ export class RenderSystem extends System {
         this.cloudXPosition = 0;
         // this.cloudY = 0;
         this.cloudYPosition = 0;
+
+        this.eventManager.subscribe(
+            PlayerDied,
+            this.handlePlayerDied.bind(this)
+        );
+    }
+
+    handlePlayerDied(eventObj) {
+        console.log('player died:', eventObj);
+        // console.log('are we in the correct this?:', this.mountainPosition);
     }
 
     drawBackground(camera) {
@@ -82,29 +95,96 @@ export class RenderSystem extends System {
         );
     }
 
-    // drawHud() {}
+    drawHud(player) {
+        this.context.textAlign = 'left';
+        this.context.font = '14px "04b03"';
+
+        this.context.fillStyle = 'black';
+        this.context.fillText('Height: ' + player.stats.getHeight(), 10, 17);
+        this.context.fillStyle = 'white';
+        this.context.fillText('Height: ' + player.stats.getHeight(), 11, 18);
+
+        this.context.fillStyle = 'black';
+        this.context.fillText('Stamina', 10, this.screenHeight - 25);
+        this.context.fillStyle = 'white';
+        this.context.fillText('Stamina', 11, this.screenHeight - 24);
+
+        this.context.drawImage(
+            this.imagemap['coin-gold.png'],
+            0,
+            0,
+            16,
+            16,
+            this.screenWidth - 80,
+            6,
+            16,
+            16
+        );
+
+        this.context.fillStyle = 'black';
+        this.context.fillText(
+            player.stats.getCoins(),
+            this.screenWidth - 60,
+            17
+        );
+        this.context.fillStyle = 'white';
+        this.context.fillText(
+            player.stats.getCoins(),
+            this.screenWidth - 59,
+            18
+        );
+    }
+
+    drawAnimations() {
+        var candidates = this.entityManager.queryComponents([
+            Animatable,
+            Position,
+        ]);
+
+        candidates.forEach((entity) => {
+            entity.animatable
+                .getAnimation()
+                // TODO: Consider having the animation draw function just take a
+                // position directly so we don't have to create intermediary classes
+                .setPosition(new Vector2(entity.position.x, entity.position.y));
+            entity.animatable.getAnimation().draw(this.context);
+        });
+    }
 
     // drawLevel() {
 
     // }
 
     update() {
-        this.context.textAlign = 'left';
-        this.context.font = '14px "04b03"';
-
         const eCamera = this.entityManager.queryTag('camera')[0];
         const player = this.entityManager.queryTag('player')[0];
 
         this.drawBackground(eCamera.camera);
 
-        var drawStatic = function (entity, context, imagemap) {
+        const drawStatic = function (entity, context, imagemap) {
             context.drawImage(
-                imagemap[entity.sprite.getImage()],
+                imagemap[entity.image.getImage()],
                 Math.floor(
                     entity.position.getX() + eCamera.camera.getXOffset()
                 ),
                 Math.floor(entity.position.getY() + eCamera.camera.getYOffset())
             );
+        };
+
+        const drawAnimationStatic = function (entity, context) {
+            entity.animatable
+                .getAnimation()
+                .setPosition(
+                    new Vector2(
+                        Math.floor(
+                            entity.position.getX() + eCamera.camera.getXOffset()
+                        ),
+                        Math.floor(
+                            entity.position.getY() + eCamera.camera.getYOffset()
+                        )
+                    )
+                );
+            entity.animatable.getAnimation().draw(context);
         };
 
         let playerPlatformNode = this.platformController.getCurrentPlatform();
@@ -135,9 +215,21 @@ export class RenderSystem extends System {
             }
 
             let platformEntity = currentPlatformNode.platformEntity;
+            let platformItemEntity = currentPlatformNode.itemEntity;
 
             platformEntity.position.setX(currentPlatformX);
             platformEntity.position.setY(currentPlatformY);
+
+            if (platformItemEntity != null) {
+                platformItemEntity.position.setX(currentPlatformX + 24);
+                platformItemEntity.position.setY(currentPlatformY - 20);
+
+                drawAnimationStatic(
+                    platformItemEntity,
+                    this.context,
+                    this.imagemap
+                );
+            }
 
             drawStatic(platformEntity, this.context, this.imagemap);
 
@@ -153,6 +245,8 @@ export class RenderSystem extends System {
                 Constants.PLATFORM_X_DISTANCE_FACTOR *
                 currentPlatformNode.relativePosition;
         }
+
+        // this.drawAnimations();
 
         player.position.setX(playerPlatformXPosition + 16);
         player.position.setY(playerPlatformYPosition - 48);
@@ -178,7 +272,7 @@ export class RenderSystem extends System {
         //drawStatic(player, this.context, this.imagemap);
         // custom draw required for player
         this.context.drawImage(
-            this.imagemap[player.sprite.getImage()],
+            this.imagemap[player.image.getImage()],
             Math.floor(
                 player.position.getX() +
                     eCamera.camera.getXOffset() -
@@ -191,14 +285,6 @@ export class RenderSystem extends System {
             )
         );
 
-        this.context.fillStyle = 'black';
-        this.context.fillText('Height: ' + player.stats.getHeight(), 10, 17);
-        this.context.fillStyle = 'white';
-        this.context.fillText('Height: ' + player.stats.getHeight(), 11, 18);
-
-        this.context.fillStyle = 'black';
-        this.context.fillText('Stamina', 10, this.screenHeight - 25);
-        this.context.fillStyle = 'white';
-        this.context.fillText('Stamina', 11, this.screenHeight - 24);
+        this.drawHud(player);
     }
 }

@@ -1,8 +1,8 @@
 import { Component } from '../Component';
 
-export class Sprite extends Component {
+export class Image extends Component {
     constructor(image = null) {
-        super('sprite');
+        super('image');
 
         this.image = image;
     }

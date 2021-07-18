@@ -1,19 +1,33 @@
-import { Sprite } from '../components/Sprite';
+import { Image } from '../components/Image';
 import { Position } from '../components/Position';
+import { Animatable } from '../components/Animatable';
 import { Box } from '../components/Box';
+import {
+    CoinAnimationFactory,
+    CoinType,
+} from '../factories/CoinAnimationFactory';
 
 export class PlatformNode {
-    constructor(relativePosition, platformEntity, prevNode = null) {
+    constructor(
+        relativePosition,
+        platformEntity,
+        itemEntity = null,
+        prevNode = null
+    ) {
         this.relativePosition = relativePosition;
         this.platformEntity = platformEntity;
+        this.itemEntity = itemEntity;
         this.prev = prevNode;
         this.next = null;
     }
 }
 
 export class PlatformController {
-    constructor(entityManager) {
+    constructor(entityManager, imagemap) {
         this.entityManager = entityManager;
+
+        this.coinAnimationFactory = new CoinAnimationFactory(imagemap);
+
         this.currentPlatform = null;
         this.head = null;
         this.tail = null;
@@ -24,9 +38,13 @@ export class PlatformController {
         while (counter < amount) {
             // TODO: Use a consistent seed for this
             let relativePosition = Math.round(Math.random()) ? 1 : -1;
+
+            let hasCoin = Math.round(Math.random() * 100) % 10 == 0;
+
             let node = new PlatformNode(
                 relativePosition,
-                this.createPlatformEntity()
+                this.createPlatformEntity(),
+                hasCoin ? this.createCoinEntity() : null
             );
 
             if (this.head == null && this.tail == null) {
@@ -73,15 +91,28 @@ export class PlatformController {
         // TODO: Create a constant for this
         platform.addTag('platform');
 
-        platform.addComponent(Sprite);
+        platform.addComponent(Image);
         platform.addComponent(Position);
         platform.addComponent(Box);
 
-        platform.sprite.setImage('platform.png');
+        platform.image.setImage('platform.png');
         // TODO: Read these values from the image
         platform.box.setWidth(64);
         platform.box.setHeight(16);
 
         return platform;
+    }
+
+    createCoinEntity() {
+        let coin = this.entityManager.createEntity();
+        coin.addTag('coin');
+
+        coin.addComponent(Animatable);
+        coin.addComponent(Position);
+        coin.animatable.setAnimation(
+            this.coinAnimationFactory.getCoin(CoinType.GOLD)
+        );
+
+        return coin;
     }
 }

@@ -11,6 +11,7 @@ import {
 } from '../components/Character';
 
 import * as Constants from '../Constants';
+import { PlayerDied } from '../events/PlayerDied';
 
 export const DirectionSpriteMap = {
     0: 'character-left.png',
@@ -23,8 +24,8 @@ export const JumpDirectionSpriteMap = {
 };
 
 export class PlayerControlSystem extends System {
-    constructor(keyPressedOnceHandler, platformController) {
-        super('movementSystem');
+    constructor(eventManager, keyPressedOnceHandler, platformController) {
+        super('playerControlSystem', eventManager);
         this.keyPressedOnceHandler = keyPressedOnceHandler;
         this.platformController = platformController;
 
@@ -32,9 +33,13 @@ export class PlayerControlSystem extends System {
         this.vipJumps = 0;
         this.maxVipJumps = 250;
         this.autoJumpTick = 0;
+
+        console.log('playercontrol system event manager:', this.eventManager);
     }
 
     update() {
+        // How can we display ␣ is the jump key at the start...?
+
         const eCamera = this.entityManager.queryTag(Constants.CAMERA_TAG)[0];
 
         const player = this.entityManager.queryTag(Constants.PLAYER_TAG)[0];
@@ -45,11 +50,11 @@ export class PlayerControlSystem extends System {
             Math.abs(player.offset.getYOffset()) <= 1 &&
             Math.abs(player.offset.getXOffset()) <= 1
         ) {
-            player.sprite.setImage(
+            player.image.setImage(
                 DirectionSpriteMap[player.character.getDirection()]
             );
         } else {
-            player.sprite.setImage(
+            player.image.setImage(
                 JumpDirectionSpriteMap[player.character.getDirection()]
             );
         }
@@ -70,6 +75,7 @@ export class PlayerControlSystem extends System {
                     nextPlatformNode.relativePosition !=
                     DirectionVelocityMap[playerDirection]
                 ) {
+                    this.eventManager.emit(new PlayerDied());
                     // TODO: Come up with an easy way to emit some kind of restart event
                     alert('failure!');
                 } else {
@@ -110,6 +116,7 @@ export class PlayerControlSystem extends System {
                     nextPlatformNode.relativePosition !=
                     DirectionVelocityMap[playerDirection]
                 ) {
+                    this.eventManager.emit(new PlayerDied());
                     // TODO: Come up with an easy way to emit some kind of restart event
                     alert('failure!');
                 } else {
@@ -138,13 +145,22 @@ export class PlayerControlSystem extends System {
                     this.platformController.moveCurrentUp();
 
                     player.stats.setHeight(player.stats.getHeight() + 1);
+
+                    if (
+                        this.platformController.getCurrentPlatform()
+                            .itemEntity != null
+                    ) {
+                        player.stats.setCoins(player.stats.getCoins() + 5);
+                        this.platformController.getCurrentPlatform().itemEntity =
+                            null;
+                    }
                 }
             } else if (this.keyPressedOnceHandler.isPressed('z')) {
                 console.log('test');
                 this.vipMode = true;
             }
         } else {
-            this.autoJumpTick = (this.autoJumpTick + 1) % 5;
+            this.autoJumpTick = (this.autoJumpTick + 1) % 20;
             if (this.autoJumpTick == 0) {
                 if (this.vipJumps < this.maxVipJumps) {
                     ++this.vipJumps;
@@ -180,6 +196,15 @@ export class PlayerControlSystem extends System {
                     this.platformController.moveCurrentUp();
 
                     player.stats.setHeight(player.stats.getHeight() + 1);
+
+                    if (
+                        this.platformController.getCurrentPlatform()
+                            .itemEntity != null
+                    ) {
+                        player.stats.setCoins(player.stats.getCoins() + 5);
+                        this.platformController.getCurrentPlatform().itemEntity =
+                            null;
+                    }
                 } else {
                     this.vipMode = false;
                 }

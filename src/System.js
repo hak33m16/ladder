@@ -1,6 +1,7 @@
 export class System {
-    constructor(name) {
+    constructor(name, eventManager = null) {
         this.name = name;
+        this.eventManager = eventManager;
     }
 
     getName() {

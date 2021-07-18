@@ -3,8 +3,8 @@ import { System } from '../System';
 import { Menu } from '../menus/Menu';
 
 export class MenuSystem extends System {
-    constructor(context, canvas, imagemap, menuStack) {
-        super('movementSystem');
+    constructor(eventManager, context, canvas, imagemap, menuStack) {
+        super('movementSystem', eventManager);
         this.context = context;
         this.canvas = canvas;
         this.imagemap = imagemap;
