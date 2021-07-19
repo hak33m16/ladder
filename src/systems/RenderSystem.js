@@ -255,7 +255,7 @@ export class RenderSystem extends System {
             return a + x * (b - a);
         };
 
-        const percentage = 0.02;
+        const percentage = 0.1;
 
         // lerp camera
         eCamera.camera.setXOffset(
@@ -266,8 +266,8 @@ export class RenderSystem extends System {
         );
 
         // lerp player
-        player.offset.setXOffset(lerp(player.offset.getXOffset(), 0, 0.15));
-        player.offset.setYOffset(lerp(player.offset.getYOffset(), 0, 0.15));
+        player.offset.setXOffset(lerp(player.offset.getXOffset(), 0, 0.25));
+        player.offset.setYOffset(lerp(player.offset.getYOffset(), 0, 0.25));
 
         //drawStatic(player, this.context, this.imagemap);
         // custom draw required for player

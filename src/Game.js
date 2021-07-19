@@ -58,7 +58,7 @@ export class Game {
         this.systems = [];
         this.menuSystems = [];
 
-        this.lastRender = 0;
+        this.accumulator = 0;
         this.entityManager = nano();
         this.eventManager = new EventManager();
     }
@@ -218,15 +218,24 @@ export class Game {
 
     variableUpdate(deltaTime) {}
 
-    loop(timestamp) {
-        var progress = timestamp - this.lastRender;
+    loop(elapsed) {
+        // tickrate in milliseconds
+        const timestep = 1000 / 30
 
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.update(progress);
-
-        this.lastRender = timestamp;
         window.requestAnimationFrame(this.loop.bind(this));
 
+        this.accumulator += elapsed;
+
+        while (this.accumulator > timestep) {
+            this.accumulator -= timestep
+            // TODO: Move physics and input clearing here (fixedUpdate)
+        }
+
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // TODO: Exclusively draw here (variableUpdate)
+        this.update(timestep);
+
+        // Find a better spot for this...
         this.keyPressedOnceHandler.clear();
     }
 

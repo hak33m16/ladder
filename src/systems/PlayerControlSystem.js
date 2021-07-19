@@ -103,6 +103,15 @@ export class PlayerControlSystem extends System {
 
                     this.platformController.moveCurrentUp();
                     player.stats.setHeight(player.stats.getHeight() + 1);
+
+                    if (
+                        this.platformController.getCurrentPlatform()
+                            .itemEntity != null
+                    ) {
+                        player.stats.setCoins(player.stats.getCoins() + 5);
+                        this.platformController.getCurrentPlatform().itemEntity =
+                            null;
+                    }
                 }
             } else if (this.keyPressedOnceHandler.isPressed('Control')) {
                 player.character.setDirection(
@@ -160,7 +169,7 @@ export class PlayerControlSystem extends System {
                 this.vipMode = true;
             }
         } else {
-            this.autoJumpTick = (this.autoJumpTick + 1) % 20;
+            this.autoJumpTick = (this.autoJumpTick + 1) % 8;
             if (this.autoJumpTick == 0) {
                 if (this.vipJumps < this.maxVipJumps) {
                     ++this.vipJumps;
