@@ -7,3 +7,4 @@ export const CAMERA_TAG = 'camera';
 export const PLAYER_TAG = 'player';
 
 export const SCALE = 2;
+export const TICK_RATE = 1000 / 50

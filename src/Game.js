@@ -223,9 +223,6 @@ export class Game {
     variableUpdate(deltaTime) {}
 
     loop(elapsed) {
-        // tickrate in milliseconds
-        const timestep = 1000 / 50;
-
         window.requestAnimationFrame(this.loop.bind(this));
 
         // elapsed is the total time we've been running
@@ -234,13 +231,13 @@ export class Game {
         this.accumulator += progress;
 
         let loops = 0;
-        while (this.accumulator > timestep) {
+        while (this.accumulator > Constants.TICK_RATE) {
             ++loops;
 
-            this.accumulator -= timestep;
+            this.accumulator -= Constants.TICK_RATE;
             // TODO: Move physics and input clearing here (fixedUpdate)
             this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.update(progress);
+            this.update(Constants.TICK_RATE);
             this.keyPressedOnceHandler.clear();
 
             // This is our panic condition. If we're ever behind by this

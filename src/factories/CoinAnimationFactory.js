@@ -54,11 +54,11 @@ export class CoinAnimationFactory {
             new Rectangle(64, 0, 16, 16)
         );
 
-        const coinFrame1 = new Frame(20, [coinSprite1]);
-        const coinFrame2 = new Frame(20, [coinSprite2]);
-        const coinFrame3 = new Frame(20, [coinSprite3]);
-        const coinFrame4 = new Frame(20, [coinSprite4]);
-        const coinFrame5 = new Frame(20, [coinSprite5]);
+        const coinFrame1 = new Frame(50, [coinSprite1]);
+        const coinFrame2 = new Frame(50, [coinSprite2]);
+        const coinFrame3 = new Frame(50, [coinSprite3]);
+        const coinFrame4 = new Frame(50, [coinSprite4]);
+        const coinFrame5 = new Frame(50, [coinSprite5]);
 
         const coinAni = new Animation(true, [
             coinFrame1,
