@@ -59,6 +59,7 @@ export class Game {
         this.menuSystems = [];
 
         this.accumulator = 0;
+        this.lastRender = 0;
         this.entityManager = nano();
         this.eventManager = new EventManager();
     }
@@ -216,27 +217,46 @@ export class Game {
         }
     }
 
+    // The idea of properly separating our physics + performing interpolation
+    // for rendering is kind of overwhelming. For now, if we keep the tickrate
+    // at 50 on every machine, we can get away with it being smooth enough
     variableUpdate(deltaTime) {}
 
     loop(elapsed) {
         // tickrate in milliseconds
-        const timestep = 1000 / 30
+        const timestep = 1000 / 50;
 
         window.requestAnimationFrame(this.loop.bind(this));
 
-        this.accumulator += elapsed;
+        // elapsed is the total time we've been running
+        const progress = elapsed - this.lastRender;
 
+        this.accumulator += progress;
+
+        let loops = 0;
         while (this.accumulator > timestep) {
-            this.accumulator -= timestep
+            ++loops;
+
+            this.accumulator -= timestep;
             // TODO: Move physics and input clearing here (fixedUpdate)
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.update(progress);
+            this.keyPressedOnceHandler.clear();
+
+            // This is our panic condition. If we're ever behind by this
+            // many physics updates, they were probably tabbed out. Just
+            // drop our desire to update altogether
+            if (loops > 100) {
+                console.log('panic');
+                this.accumulator = 0;
+                this.lastRender = elapsed;
+                return;
+            }
         }
 
-        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         // TODO: Exclusively draw here (variableUpdate)
-        this.update(timestep);
 
-        // Find a better spot for this...
-        this.keyPressedOnceHandler.clear();
+        this.lastRender = elapsed;
     }
 
     run() {

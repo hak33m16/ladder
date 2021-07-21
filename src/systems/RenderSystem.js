@@ -30,7 +30,7 @@ export class RenderSystem extends System {
         this.mountainWidth = 500 / Constants.SCALE;
         this.mountainHeight = 160;
 
-        this.cloudSpeed = 0.05;
+        this.cloudSpeed = 0.1;
         this.cloudX = 0;
         this.cloudXPosition = 0;
         // this.cloudY = 0;
@@ -155,7 +155,7 @@ export class RenderSystem extends System {
 
     // }
 
-    update() {
+    update(dt) {
         const eCamera = this.entityManager.queryTag('camera')[0];
         const player = this.entityManager.queryTag('player')[0];
 
@@ -255,7 +255,7 @@ export class RenderSystem extends System {
             return a + x * (b - a);
         };
 
-        const percentage = 0.1;
+        const percentage = 0.15;
 
         // lerp camera
         eCamera.camera.setXOffset(
@@ -266,8 +266,8 @@ export class RenderSystem extends System {
         );
 
         // lerp player
-        player.offset.setXOffset(lerp(player.offset.getXOffset(), 0, 0.25));
-        player.offset.setYOffset(lerp(player.offset.getYOffset(), 0, 0.25));
+        player.offset.setXOffset(lerp(player.offset.getXOffset(), 0, 0.3));
+        player.offset.setYOffset(lerp(player.offset.getYOffset(), 0, 0.3));
 
         //drawStatic(player, this.context, this.imagemap);
         // custom draw required for player

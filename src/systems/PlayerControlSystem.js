@@ -155,6 +155,26 @@ export class PlayerControlSystem extends System {
 
                     player.stats.setHeight(player.stats.getHeight() + 1);
 
+                    // Instead of having the control system be responsible for this, it'd
+                    // probably be more appropriate to emit some kind of collision event
+                    // between the player and this coin. Another system could subscribe
+                    // to collisions, and if it finds that a collision occurred between
+                    // the player and an entity that it's interested in, it can be responsible
+                    // for modifying stats about the player. We could use the concept of tags,
+                    // and map those to other events that should happen
+                    //
+                    // e.g. the 'player' + 'gold-coin' tag colliding would result in an
+                    // event being emitted, something like PlayerStatChangeEvent, which
+                    // the StatSystem could pick up and modify the player stats from. The
+                    // HUD in the RenderSystem could also watch for these events, and if
+                    // it sees that the player's gold changed, add a little "+5" that fades
+                    // out, below the gold counter
+                    //
+                    // As an aside, it'd be interesting if we handled that be holding an array
+                    // of Animatable entities below that contained our desired text. We'd need
+                    // a new "Image/Sprite" type of "Text", and it'd also be cool if we could
+                    // add in "fading" as an Animation boolean. The AnimationSystem could clean
+                    // up any fully faded animations for us
                     if (
                         this.platformController.getCurrentPlatform()
                             .itemEntity != null
