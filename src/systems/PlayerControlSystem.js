@@ -109,8 +109,15 @@ export class PlayerControlSystem extends System {
                             .itemEntity != null
                     ) {
                         player.stats.setCoins(player.stats.getCoins() + 5);
+                        console.log('mctest2');
                         this.platformController.getCurrentPlatform().itemEntity =
-                            null;
+                            this.platformController.createTextEntity('+5');
+
+                        console.log(
+                            'current platforms entity:',
+                            this.platformController.getCurrentPlatform()
+                                .itemEntity
+                        );
                     }
                 }
             } else if (this.keyPressedOnceHandler.isPressed('Control')) {
@@ -180,8 +187,15 @@ export class PlayerControlSystem extends System {
                             .itemEntity != null
                     ) {
                         player.stats.setCoins(player.stats.getCoins() + 5);
+                        console.log('mctest2');
                         this.platformController.getCurrentPlatform().itemEntity =
-                            null;
+                            this.platformController.createTextEntity('+5');
+
+                        console.log(
+                            'current platforms entity:',
+                            this.platformController.getCurrentPlatform()
+                                .itemEntity
+                        );
                     }
                 }
             } else if (this.keyPressedOnceHandler.isPressed('z')) {
@@ -231,8 +245,9 @@ export class PlayerControlSystem extends System {
                             .itemEntity != null
                     ) {
                         player.stats.setCoins(player.stats.getCoins() + 5);
+                        console.log('mctest2');
                         this.platformController.getCurrentPlatform().itemEntity =
-                            null;
+                            this.platformController.createTextEntity('+5');
                     }
                 } else {
                     this.vipMode = false;

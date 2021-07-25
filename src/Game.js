@@ -181,11 +181,6 @@ export class Game {
                 this.canvas.height - player.box.getHeight() - PLATFORM_HEIGHT
             )
         );
-        console.log('direction velocity map:', VelocityDirectionMap);
-        console.log(
-            'next platform:',
-            platformController.getBottomPlatform().next
-        );
         player.character.setDirection(
             VelocityDirectionMap[
                 platformController.getBottomPlatform().next.relativePosition
@@ -240,11 +235,10 @@ export class Game {
             this.update(Constants.TICK_RATE);
             this.keyPressedOnceHandler.clear();
 
-            // This is our panic condition. If we're ever behind by this
-            // many physics updates, they were probably tabbed out. Just
-            // drop our desire to update altogether
-            if (loops > 100) {
-                console.log('panic');
+            // Using a minimal panic condition because if it's ever greater
+            // than 2, they were probably tabbed out. 2 sometimes happens
+            // because requestAnimationFrame waited for 2 frames
+            if (loops > 2) {
                 this.accumulator = 0;
                 this.lastRender = elapsed;
                 return;

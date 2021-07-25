@@ -1,34 +1,28 @@
 import { System } from '../System';
 
-import { Position } from '../components/Position';
 import { Velocity } from '../components/Velocity';
-import { Moveable } from '../components/Moveable';
-import { Collideable } from '../components/Collideable';
+import { Offset } from '../components/Offset';
 
 export class MovementSystem extends System {
     constructor(eventManager) {
         super('movementSystem', eventManager);
     }
 
-    update() {
-        var candidates = this.entityManager.queryComponents([
-            Position,
-            Velocity,
-            Moveable,
-            Collideable,
-        ]);
+    update(dt) {
+        var candidates = this.entityManager.queryComponents([Velocity, Offset]);
 
         candidates.forEach(function (entity) {
-            var x = Number(entity.position.getX());
-            var y = Number(entity.position.getY());
+            // console.log('updating candidate:', entity);
+            var x = Number(entity.offset.getXOffset());
+            var y = Number(entity.offset.getYOffset());
 
-            var speed = Number(entity.moveable.getSpeed());
+            // var speed = Number(entity.moveable.getSpeed());
 
-            entity.position.setX(
-                Number(x + Number(entity.velocity.getVelocityX() * speed))
+            entity.offset.setXOffset(
+                Number(x + Number(entity.velocity.getVelocityX()))
             );
-            entity.position.setY(
-                Number(y + Number(entity.velocity.getVelocityY() * speed))
+            entity.offset.setYOffset(
+                Number(y + Number(entity.velocity.getVelocityY()))
             );
         });
     }

@@ -6,6 +6,9 @@ import {
     CoinAnimationFactory,
     CoinType,
 } from '../factories/CoinAnimationFactory';
+import { Text } from '../components/Text';
+import { Offset } from '../components/Offset';
+import { Velocity } from '../components/Velocity';
 
 export class PlatformNode {
     constructor(
@@ -114,5 +117,24 @@ export class PlatformController {
         );
 
         return coin;
+    }
+
+    createTextEntity(message) {
+        console.log('creating text entity with message:', message);
+
+        let text = this.entityManager.createEntity();
+        text.addTag('text');
+
+        text.addComponent(Text);
+        text.addComponent(Position);
+        text.addComponent(Offset);
+        text.addComponent(Velocity);
+
+        text.velocity.setVelocityY(-1.5);
+        // TODO: Figure out why not doing this results in x being NaN
+        text.velocity.setVelocityX(0);
+        text.text.setMessage(message);
+
+        return text;
     }
 }

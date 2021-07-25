@@ -9,6 +9,7 @@ import { PlayerDied } from '../events/PlayerDied';
 
 import * as Constants from '../Constants';
 import { Vector2 } from '../system/Vector2';
+import { Text } from '../components/Text';
 
 export class RenderSystem extends System {
     constructor(eventManager, context, canvas, platformController, imagemap) {
@@ -187,6 +188,27 @@ export class RenderSystem extends System {
             entity.animatable.getAnimation().draw(context);
         };
 
+        const drawTextStatic = function (entity, context) {
+            // console.log('drawing static text for:', entity);
+            context.save();
+            context.globalAlpha = 10 / Math.abs(entity.offset.getYOffset());
+
+            context.fillStyle = 'black';
+            context.fillText(
+                entity.text.getMessage(),
+                entity.position.getX() + entity.offset.getXOffset(),
+                entity.position.getY() + entity.offset.getYOffset()
+            );
+            context.fillStyle = 'white';
+            context.fillText(
+                entity.text.getMessage(),
+                entity.position.getX() + entity.offset.getXOffset() + 1,
+                entity.position.getY() + entity.offset.getYOffset() + 1
+            );
+
+            context.restore();
+        };
+
         let playerPlatformNode = this.platformController.getCurrentPlatform();
 
         let currentPlatformNode = this.platformController.getCurrentPlatform();
@@ -224,11 +246,16 @@ export class RenderSystem extends System {
                 platformItemEntity.position.setX(currentPlatformX + 24);
                 platformItemEntity.position.setY(currentPlatformY - 20);
 
-                drawAnimationStatic(
-                    platformItemEntity,
-                    this.context,
-                    this.imagemap
-                );
+                if (platformItemEntity.hasComponent(Animatable)) {
+                    drawAnimationStatic(
+                        platformItemEntity,
+                        this.context,
+                        this.imagemap
+                    );
+                } else if (platformItemEntity.hasComponent(Text)) {
+                    // console.log('calling draw text static');
+                    drawTextStatic(platformItemEntity, this.context);
+                }
             }
 
             drawStatic(platformEntity, this.context, this.imagemap);
