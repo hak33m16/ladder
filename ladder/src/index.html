@@ -1,0 +1,50 @@
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+    rel="stylesheet"
+/> -->
+<style type="text/css">
+    @font-face {
+        font-family: '04b03';
+        src: url('resources/fonts/04b03.woff2') format('woff2'),
+            url('resources/fonts/04b03.woff') format('woff'),
+            url('resources/fonts/04b03.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    body {
+        font-family: '04b03';
+    }
+</style>
+<body>
+    <div
+        style="
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <div
+            style="
+                width: 1000px;
+                height: 700px;
+                border: 1px;
+                border-style: solid;
+                border-color: black;
+            "
+        >
+            <canvas id="ladderGame" width="1000" height="700"></canvas>
+            <script
+                src="build/src/main.js"
+                style="width: 1000px; height: 700px"
+            ></script>
+        </div>
+    </div>
+    <div>
+        <!-- <span>Test test</span> -->
+    </div>
+</body>
