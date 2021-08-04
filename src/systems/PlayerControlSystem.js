@@ -63,7 +63,16 @@ export class PlayerControlSystem extends System {
         // console.log('platform controller:', this.platformController);
 
         if (this.vipMode == false) {
-            if (this.keyPressedOnceHandler.isPressed(' ')) {
+            if (
+                this.keyPressedOnceHandler.isPressed(' ') ||
+                this.keyPressedOnceHandler.isPressed('Control')
+            ) {
+                if (this.keyPressedOnceHandler.isPressed('Control')) {
+                    player.character.setDirection(
+                        (player.character.getDirection() + 1) % 2
+                    );
+                }
+
                 let nextPlatformNode = currentPlatformNode.next;
                 let playerDirection = player.character.getDirection();
 
@@ -102,64 +111,6 @@ export class PlayerControlSystem extends System {
                     );
 
                     this.platformController.moveCurrentUp();
-                    player.stats.setHeight(player.stats.getHeight() + 1);
-
-                    if (
-                        this.platformController.getCurrentPlatform()
-                            .itemEntity != null
-                    ) {
-                        player.stats.setCoins(player.stats.getCoins() + 5);
-                        console.log('mctest2');
-                        this.platformController.getCurrentPlatform().itemEntity =
-                            this.platformController.createTextEntity('+5');
-
-                        console.log(
-                            'current platforms entity:',
-                            this.platformController.getCurrentPlatform()
-                                .itemEntity
-                        );
-                    }
-                }
-            } else if (this.keyPressedOnceHandler.isPressed('Control')) {
-                player.character.setDirection(
-                    (player.character.getDirection() + 1) % 2
-                );
-
-                let nextPlatformNode = currentPlatformNode.next;
-                let playerDirection = player.character.getDirection();
-                // reverse direction
-                if (
-                    nextPlatformNode.relativePosition !=
-                    DirectionVelocityMap[playerDirection]
-                ) {
-                    this.eventManager.emit(new PlayerDied());
-                    // TODO: Come up with an easy way to emit some kind of restart event
-                    alert('failure!');
-                } else {
-                    // Update camera offset
-                    eCamera.camera.setXOffset(
-                        eCamera.camera.getXOffset() +
-                            Constants.PLATFORM_X_DISTANCE_FACTOR *
-                                nextPlatformNode.relativePosition
-                    );
-                    eCamera.camera.setYOffset(
-                        eCamera.camera.getYOffset() -
-                            Constants.PLATFORM_Y_DISTANCE_FACTOR
-                    );
-
-                    // Update player offset
-                    player.offset.setXOffset(
-                        player.offset.getXOffset() +
-                            Constants.PLATFORM_X_DISTANCE_FACTOR *
-                                nextPlatformNode.relativePosition
-                    );
-                    player.offset.setYOffset(
-                        player.offset.getYOffset() -
-                            Constants.PLATFORM_Y_DISTANCE_FACTOR
-                    );
-
-                    this.platformController.moveCurrentUp();
-
                     player.stats.setHeight(player.stats.getHeight() + 1);
 
                     // Instead of having the control system be responsible for this, it'd
