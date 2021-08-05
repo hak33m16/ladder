@@ -18,23 +18,38 @@
     body {
         font-family: '04b03';
     }
+
+    th {
+        background-color: gainsboro;
+        text-transform: uppercase;
+    }
+
+    td:first-child {
+        background-color: gainsboro;
+        font-weight: bold;
+    }
+
+    td {
+        padding: 5px;
+    }
 </style>
 <body>
     <div
         style="
             width: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            /* align-items: center; */
+            /* justify-content: center; */
         "
     >
         <div
             style="
-                width: 1000px;
-                height: 700px;
-                border: 1px;
-                border-style: solid;
-                border-color: black;
+                display: flex;
+                width: 100%;
+                height: 100%;
+                align-items: center;
+                justify-content: center;
             "
         >
             <canvas id="ladderGame" width="1000" height="700"></canvas>
@@ -43,8 +58,39 @@
                 style="width: 1000px; height: 700px"
             ></script>
         </div>
-    </div>
-    <div>
-        <!-- <span>Test test</span> -->
+        <br />
+        <div
+            style="
+                display: flex;
+                width: 100%;
+                height: 100%;
+                align-items: left;
+                justify-content: center;
+                margin-top: 5em;
+        "
+        >
+            <table>
+                <tr>
+                    <th>Key</td>
+                    <th>Action</td>
+                </tr>
+                <tr>
+                    <td>Arrows</td>
+                    <td>Change Menu Selection</td>
+                </tr>
+                <tr>
+                    <td>Enter</td>
+                    <td>Confirm Selection</td>
+                </tr>
+                <tr>
+                    <td>Space</td>
+                    <td>Jump Forward</td>
+                </tr>
+                <tr>
+                    <td>Control</td>
+                    <td>Switch Direction and Jump Forward</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>
