@@ -6,7 +6,8 @@
     "scripts": {
         "test": "test",
         "start": "node server.js",
-        "build": "browserify src/main.js -p esmify > src/build/src/main.js"
+        "clean": "rm -r src/build || echo 'No build folder found'",
+        "build": "mkdir -p src/build/src && browserify src/main.js -p esmify > src/build/src/main.js"
     },
     "author": "Alexander Webster",
     "license": "ISC",
