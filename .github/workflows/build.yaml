@@ -10,7 +10,7 @@ env:
   PR_NUMBER: ${{ github.event.pull_request.number }}
   PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
   TARGET_BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
-  CURRENT_BRANCH_REF: ${{ github.event.push.ref }}
+  CURRENT_BRANCH_REF: ${{ github.ref }}
 
 jobs:
   test:
@@ -54,13 +54,9 @@ jobs:
           script: |
             cd ladder
             export PR_NUMBER="$PR_NUMBER"
-            export PR_BRANCH_NAME="$PR_BRANCH_NAME"
-            export TARGET_BRANCH_NAME="$PR_BRANCH_NAME"
+            export PR_BRANCH_NAME="${PR_BRANCH_NAME:-$BRANCH_NAME}"
+            export TARGET_BRANCH_NAME="${TARGET_BRANCH_NAME:-$BRANCH_NAME}"
             export BRANCH_NAME="$BRANCH_NAME"
-
-            if [[ "1" == "1" ]]; then
-              echo "We can execute scripts inside of this block"
-            fi
 
             git fetch --all
             git checkout -- .
