@@ -1,0 +1,57 @@
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+  PR_BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+  TARGET_BRANCH_NAME: ${{ github.event.pull_request.base.ref }}
+
+jobs:
+  test:
+    name: Test on node ${{ matrix.node-version }} and ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [14.x]
+        os: [ubuntu-18.04]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install
+        run: npm ci
+      - name: npm build
+        run: npm run build
+  release:
+    needs: test
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Execute ssh shell commands
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.WEBSITE_HOST }}
+          port: ${{ secrets.WEBSITE_SSH_PORT }}
+          username: ${{ secrets.WEBSITE_USER }}
+          key: ${{ secrets.WEBSITE_PRIVATE_KEY }}
+          envs: PR_NUMBER,PR_BRANCH_NAME,TARGET_BRANCH_NAME
+          script_stop: true
+          script: |
+            cd ladder
+            git checkout -- .
+            git pull
+            git checkout "$TARGET_BRANCH_NAME"
+            git pull
+            git checkout "$PR_BRANCH_NAME"
+            git pull
+            git merge "$TARGET_BRANCH_NAME"
+            export PR_NUMBER=$PR_NUMBER
+            ./publish.sh
