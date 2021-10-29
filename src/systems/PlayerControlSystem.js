@@ -38,11 +38,9 @@ export class PlayerControlSystem extends System {
     }
 
     update() {
-        // How can we display ␣ is the jump key at the start...?
-
         const eCamera = this.entityManager.queryTag(Constants.CAMERA_TAG)[0];
-
         const player = this.entityManager.queryTag(Constants.PLAYER_TAG)[0];
+
         // console.log('player direction:', player.character.getDirection());
         // console.log('player sprite:', player.sprite.getImage());
 
@@ -67,14 +65,12 @@ export class PlayerControlSystem extends System {
                 this.keyPressedOnceHandler.isPressed(' ') ||
                 this.keyPressedOnceHandler.isPressed('Control')
             ) {
-                if (this.keyPressedOnceHandler.isPressed('Control')) {
-                    player.character.setDirection(
-                        (player.character.getDirection() + 1) % 2
-                    );
-                }
+                let intendedPlayerDirection =
+                    this.keyPressedOnceHandler.isPressed('Control')
+                        ? (player.character.getDirection() + 1) % 2
+                        : player.character.getDirection();
 
                 let nextPlatformNode = currentPlatformNode.next;
-                let playerDirection = player.character.getDirection();
 
                 // console.log('next platform node:', nextPlatformNode);
                 // console.log('player direction:', playerDirection);
@@ -82,12 +78,16 @@ export class PlayerControlSystem extends System {
 
                 if (
                     nextPlatformNode.relativePosition !=
-                    DirectionVelocityMap[playerDirection]
+                    DirectionVelocityMap[intendedPlayerDirection]
                 ) {
                     this.eventManager.emit(new PlayerDied());
                     // TODO: Come up with an easy way to emit some kind of restart event
                     alert('failure!');
                 } else {
+                    if (this.keyPressedOnceHandler.isPressed('Control')) {
+                        player.character.setDirection(intendedPlayerDirection);
+                    }
+
                     // Update camera offset
                     eCamera.camera.setXOffset(
                         eCamera.camera.getXOffset() +
