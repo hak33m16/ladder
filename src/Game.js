@@ -189,6 +189,20 @@ export class Game {
         );
 
         Howler.mute(true);
+
+        // Disables scrolling behavior for keys used to control game
+        window.addEventListener(
+            'keydown',
+            (e) => {
+                if (
+                    e.code === 'Space' ||
+                    e.code === 'ArrowUp' ||
+                    e.code === 'ArrowDown'
+                )
+                    e.preventDefault();
+            },
+            false
+        );
     }
 
     getContext() {
