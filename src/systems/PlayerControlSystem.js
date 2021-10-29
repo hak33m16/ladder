@@ -37,12 +37,12 @@ export class PlayerControlSystem extends System {
         this.autoJumpTick = 0;
 
         this.pickupCoinSound = new Howl({
-            src: ['../resources/sounds/fx/pickup-coin.wav'],
+            src: ['resources/sounds/fx/pickup-coin.wav'],
         });
         this.pickupCoinSound.volume(0.5);
 
         this.jumpSound = new Howl({
-            src: ['../resources/sounds/fx/jump.wav'],
+            src: ['resources/sounds/fx/jump.wav'],
         });
 
         console.log('playercontrol system event manager:', this.eventManager);
