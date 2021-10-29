@@ -1,3 +1,5 @@
+const { Howler } = require('howler');
+
 import { System } from '../System';
 
 import { Position } from '../components/Position';
@@ -41,6 +43,32 @@ export class RenderSystem extends System {
             PlayerDied,
             this.handlePlayerDied.bind(this)
         );
+
+        // Set up local / global mute
+        this.soundOn = false;
+        let self = this;
+        canvas.addEventListener('click', function (e) {
+            const rect = canvas.getBoundingClientRect();
+            const cursorPos = {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+            };
+
+            if (
+                // Mute/unmute button boundaries
+                cursorPos.x >= 864 &&
+                cursorPos.x <= 906 &&
+                cursorPos.y >= 620 &&
+                cursorPos.y <= 653
+            ) {
+                self.toggleSoundOn();
+                self.soundOn ? Howler.mute(false) : Howler.mute(true);
+            }
+        });
+    }
+
+    toggleSoundOn() {
+        this.soundOn = !this.soundOn;
     }
 
     handlePlayerDied(eventObj) {
@@ -151,10 +179,6 @@ export class RenderSystem extends System {
             entity.animatable.getAnimation().draw(this.context);
         });
     }
-
-    // drawLevel() {
-
-    // }
 
     update(dt) {
         const eCamera = this.entityManager.queryTag('camera')[0];
@@ -313,5 +337,37 @@ export class RenderSystem extends System {
         );
 
         this.drawHud(player);
+
+        if (this.soundOn) {
+            this.context.drawImage(
+                this.imagemap['note-on-shadow.svg'],
+                this.screenWidth - 75,
+                this.screenHeight - 46,
+                33,
+                34
+            );
+            this.context.drawImage(
+                this.imagemap['note-on.svg'],
+                this.screenWidth - 74,
+                this.screenHeight - 45,
+                33,
+                34
+            );
+        } else {
+            this.context.drawImage(
+                this.imagemap['note-off-shadow.svg'],
+                this.screenWidth - 75,
+                this.screenHeight - 46,
+                33,
+                34
+            );
+            this.context.drawImage(
+                this.imagemap['note-off.svg'],
+                this.screenWidth - 74,
+                this.screenHeight - 45,
+                33,
+                34
+            );
+        }
     }
 }

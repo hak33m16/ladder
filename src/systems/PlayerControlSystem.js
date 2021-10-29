@@ -1,3 +1,5 @@
+const { Howl, Howler } = require('howler');
+
 import { System } from '../System';
 
 import { Position } from '../components/Position';
@@ -33,6 +35,15 @@ export class PlayerControlSystem extends System {
         this.vipJumps = 0;
         this.maxVipJumps = 250;
         this.autoJumpTick = 0;
+
+        this.pickupCoinSound = new Howl({
+            src: ['../resources/sounds/fx/pickup-coin.wav'],
+        });
+        this.pickupCoinSound.volume(0.5);
+
+        this.jumpSound = new Howl({
+            src: ['../resources/sounds/fx/jump.wav'],
+        });
 
         console.log('playercontrol system event manager:', this.eventManager);
     }
@@ -113,6 +124,9 @@ export class PlayerControlSystem extends System {
                     this.platformController.moveCurrentUp();
                     player.stats.setHeight(player.stats.getHeight() + 1);
 
+                    this.jumpSound.volume(Math.random() * (0.35 - 0.5) + 0.35);
+                    this.jumpSound.play();
+
                     // Instead of having the control system be responsible for this, it'd
                     // probably be more appropriate to emit some kind of collision event
                     // between the player and this coin. Another system could subscribe
@@ -138,7 +152,6 @@ export class PlayerControlSystem extends System {
                             .itemEntity != null
                     ) {
                         player.stats.setCoins(player.stats.getCoins() + 5);
-                        console.log('mctest2');
                         this.platformController.getCurrentPlatform().itemEntity =
                             this.platformController.createTextEntity('+5');
 
@@ -147,6 +160,8 @@ export class PlayerControlSystem extends System {
                             this.platformController.getCurrentPlatform()
                                 .itemEntity
                         );
+
+                        this.pickupCoinSound.play();
                     }
                 }
             } else if (this.keyPressedOnceHandler.isPressed('z')) {
