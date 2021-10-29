@@ -54,6 +54,10 @@ var imageStrings = [
     'clouds.png',
     'coin-gold.png',
     'coin-silver.png',
+    'note-on.svg',
+    'note-off.svg',
+    'note-on-shadow.svg',
+    'note-off-shadow.svg',
 ];
 
 var IMAGEMAP_ = {};
