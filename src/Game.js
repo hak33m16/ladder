@@ -1,4 +1,5 @@
 var nano = require('nano-ecs');
+const { Howler } = require('howler');
 
 import { MovementSystem } from './systems/MovementSystem';
 import { RenderSystem } from './systems/RenderSystem';
@@ -186,6 +187,8 @@ export class Game {
                 platformController.getBottomPlatform().next.relativePosition
             ]
         );
+
+        Howler.mute(true);
 
         // Disables scrolling behavior for keys used to control game
         window.addEventListener(
